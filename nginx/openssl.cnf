@@ -1,0 +1,23 @@
+[ req ]
+default_bits        = 2048
+default_keyfile     = privkey.pem
+distinguished_name  = req_distinguished_name
+req_extensions      = v3_req
+prompt              = no
+
+[ req_distinguished_name ]
+countryName         = BD        # Your Country Code
+stateOrProvinceName = Dhaka     # Your State/Province
+localityName        = Dhaka     # Your City
+organizationName    = MyCompany # Your Organization
+commonName          = 145.223.97.55 # **IMPORTANT: This is your public IP**
+
+[ v3_req ]
+keyUsage            = nonRepudiation, digitalSignature, keyEncipherment
+extendedKeyUsage    = serverAuth
+subjectAltName      = @alt_names
+
+[ alt_names ]
+IP.1 = 145.223.97.55 # **IMPORTANT: List your public IP here**
+# If you also want to use the nip.io domain for internal testing with this self-signed cert
+# DNS.1 = 145-223-97-55.nip.io
