@@ -4,8 +4,14 @@ const socketIo = require("socket.io");
 const cors = require("cors");
 
 const app = express();
+app.use(express.json());
 const server = http.createServer(app);
 
+app.get("/", async (_, res) => {
+  return res
+    .status(200)
+    .json({ message: "Welcome to screen share server root endpoint" });
+});
 const io = socketIo(server, {
   cors: {
     origin: "https://screen-sharing-platform.vercel.app",
