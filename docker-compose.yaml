@@ -1,0 +1,10 @@
+services:
+  server:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: server:latest
+    environment:
+      - PORT=${PORT}
+    ports:
+      - "5152:5152"

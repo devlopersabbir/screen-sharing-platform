@@ -1,0 +1,57 @@
+@import "tailwindcss";
+
+/* Custom styles can go here if needed, but Tailwind classes are preferred */
+.App {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100vh;
+  background-color: #f0f2f5;
+  color: #333;
+  font-family: "Inter", sans-serif;
+}
+
+.join-room,
+.video-and-controls-container {
+  background-color: #fff;
+  padding: 2.5rem;
+  border-radius: 1rem;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+    0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  margin-top: 2rem;
+  max-width: 90%;
+  width: 800px; /* Max width for content */
+}
+
+.video-container {
+  flex-direction: column; /* Stack videos on small screens */
+  align-items: center;
+}
+
+@media (min-width: 768px) {
+  .video-container {
+    flex-direction: row; /* Side-by-side on larger screens */
+    justify-content: center;
+  }
+}
+
+.video-feed {
+  min-width: 320px; /* Ensure videos have a minimum size */
+}
+
+.video-feed video {
+  border-radius: 0.5rem;
+  width: 100%; /* Make video fill its container */
+  height: auto; /* Maintain aspect ratio */
+  display: block; /* Remove extra space below video */
+  max-height: 480px; /* Limit max height for large screens */
+}
+
+/* Ensure buttons have good touch targets */
+button {
+  min-width: 120px;
+  min-height: 48px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
