@@ -12,6 +12,12 @@ app.get("/", async (_, res) => {
     .status(200)
     .json({ message: "Welcome to screen share server root endpoint" });
 });
+app.get("*", async (_, res) => {
+  return res.status(200).json({
+    message: "Welcome to screen share server root endpoint",
+    path: "invalid path",
+  });
+});
 const io = socketIo(server, {
   cors: {
     origin: "https://screen-sharing-platform.vercel.app",
