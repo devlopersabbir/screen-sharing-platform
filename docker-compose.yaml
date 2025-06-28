@@ -5,11 +5,10 @@ services:
     image: nginx:alpine
     container_name: nginx-ssl
     ports:
-      - "8443:8443" # Optional extra mapping
+      - "8443:443"
     volumes:
       - ./nginx.conf:/etc/nginx/nginx.conf:ro
-      - ./certbot/www:/var/www/certbot
-      - ./certbot/conf:/etc/nginx/certs
+      - ./nginx/certs:/etc/nginx/certs:ro
     depends_on:
       - node-server
     networks:
@@ -34,10 +33,20 @@ services:
     volumes:
       - ./certbot/www:/var/www/certbot
       - ./certbot/conf:/etc/letsencrypt
-    entrypoint: >
-      sh -c "certbot certonly --webroot -w /var/www/certbot
-             --email devlopersabbir@email.com --agree-tos --no-eff-email
-             -d 145-223-97-55.nip.io --non-interactive"
+    command:
+      - certbot
+      - certonly
+      - --webroot
+      - -w
+      - /var/www/certbot
+      - --email
+      - your@email.com
+      - --agree-tos
+      - --no-eff-email
+      - -d
+      - 145-223-97-55.nip.io
+      - --non-interactive
+      - --quiet
 
 networks:
   app-network:
