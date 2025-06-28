@@ -5,10 +5,13 @@ services:
     image: nginx:alpine
     container_name: nginx-ssl
     ports:
-      - "8443:443"
+      - "80:80" # For HTTP challenge
+      - "443:443" # HTTPS
+      - "8443:443" # Optional extra mapping
     volumes:
       - ./nginx.conf:/etc/nginx/nginx.conf:ro
-      - ./nginx/certs:/etc/nginx/certs:ro
+      - ./certbot/www:/var/www/certbot
+      - ./certbot/conf:/etc/nginx/certs
     depends_on:
       - node-server
     networks:
@@ -20,12 +23,23 @@ services:
       dockerfile: Dockerfile
     container_name: node-app
     expose:
-      - "5152" # Internal only
+      - "5152"
     environment:
       - PORT=5152
     networks:
       - app-network
     restart: unless-stopped
+
+  certbot:
+    image: certbot/certbot
+    container_name: certbot
+    volumes:
+      - ./certbot/www:/var/www/certbot
+      - ./certbot/conf:/etc/letsencrypt
+    entrypoint: >
+      sh -c "certbot certonly --webroot -w /var/www/certbot
+             --email devlopersabbir@email.com --agree-tos --no-eff-email
+             -d 145-223-97-55.nip.io --non-interactive"
 
 networks:
   app-network:

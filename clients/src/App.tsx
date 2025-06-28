@@ -310,7 +310,11 @@ export default function App() {
 
   // --- Socket.IO initialization and global listeners (runs once on mount) ---
   useEffect(() => {
-    socket.current = io(baseUri, { autoConnect: false });
+    socket.current = io(baseUri, {
+      autoConnect: false,
+      transports: ["websocket"],
+      withCredentials: true,
+    });
     socket.current.connect();
 
     socket.current.on("connect", () => {
