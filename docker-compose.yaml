@@ -1,10 +1,44 @@
+version: "3.8"
+
 services:
+  # Your Node.js Socket.IO application
   server:
     build:
-      context: .
+      context: . # Build from the current directory (where Dockerfile is)
       dockerfile: Dockerfile
-    image: server:latest
+    container_name: screen-sharing-app-server
+    restart: always
     environment:
-      - PORT=${PORT}
+      - PORT=5152 # Node.js app will listen internally on this port
+    networks:
+      - app-network # Connect to our custom network for inter-container communication
+    # IMPORTANT: No 'ports' mapping here.
+    # The Node.js app is NOT exposed directly to the host network.
+    # Nginx will act as the only public entry point.
+
+  # Nginx reverse proxy and SSL terminator
+  nginx:
+    image: nginx:stable-alpine
+    container_name: screen-sharing-nginx-proxy
+    restart: always
     ports:
-      - "5152:5152"
+      # Map host port 8080 to container's internal port 80 (HTTP)
+      - "8080:80"
+      # Map host port 8443 to container's internal port 443 (HTTPS)
+      - "8443:443"
+    volumes:
+      # Mount our custom Nginx configuration file
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
+      # Mount the directory containing your self-signed certificates
+      - ~/workspace/screen-sharing-platform/certs:/etc/nginx/certs:ro
+    depends_on:
+      - server # Ensure Node.js app starts before Nginx
+    networks:
+      - app-network # Connect to the same network as the Node.js app
+
+  # Removed Certbot service as it's not needed for self-signed certificates.
+
+# Define a custom bridge network for inter-service communication
+networks:
+  app-network:
+    driver: bridge # Standard Docker bridge network
