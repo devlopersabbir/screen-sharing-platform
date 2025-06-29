@@ -1,23 +1,22 @@
 services:
   nginx:
     image: nginx:alpine
-    container_name: nginx-ssl
     ports:
-      - "8443:8443" # Your application HTTPS port
+      - "6767:6767" 
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
       - ./nginx/certs:/etc/nginx/certs:ro
     depends_on:
-      - node-server
+      - node-app-screen
     networks:
       - app-network
     restart: unless-stopped
 
-  node-server:
+  node-app-screen:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: node-app
+    container_name: node-app-screen
     expose:
       - "5152"
     environment:
@@ -25,44 +24,7 @@ services:
     networks:
       - app-network
     restart: unless-stopped
-
-  # This Nginx service will handle the HTTP-01 challenge on port 80
-  nginx-certbot-challenge:
-    image: nginx:alpine
-    container_name: nginx-certbot-challenge
-    ports:
-      - "8443:8443" # This is the critical part: mapping host port 80 to container port 80
-    volumes:
-      - ./nginx/certbot_www:/var/www/certbot:ro # Certbot writes challenge files here
-      - ./nginx/nginx_certbot_challenge.conf:/etc/nginx/conf.d/default.conf:ro
-    networks:
-      - app-network
-
-  certbot:
-    image: certbot/certbot
-    container_name: certbot
-    volumes:
-      - ./nginx/certs:/etc/letsencrypt
-      - ./nginx/certbot_www:/var/www/certbot # Certbot expects to write challenge files here
-    command:
-      - certonly
-      - --webroot
-      - -w
-      - /var/www/certbot
-      - --email
-      - mdsadikulislamsabbir@email.com # REMEMBER TO CHANGE THIS
-      - --agree-tos
-      - --no-eff-email
-      - -d
-      - 145-223-97-55.nip.io
-      - --non-interactive
-      - --quiet
-    # Certbot needs nginx-certbot-challenge to be running to serve the challenge
-    depends_on:
-      - nginx-certbot-challenge
-    networks:
-      - app-network
-
-networks: # This must be at the same indentation level as 'services:'
-  app-network: # This must be indented under 'networks:'
+    
+networks:
+  app-network:
     driver: bridge

@@ -8,16 +8,18 @@ app.use(express.json());
 const server = http.createServer(app);
 
 app.get("/", async (_, res) => {
+	console.log("listen from screen share");
   return res
     .status(200)
     .json({ message: "Welcome to screen share server root endpoint" });
 });
-app.get("*", async (_, res) => {
-  return res.status(200).json({
-    message: "Welcome to screen share server root endpoint",
-    path: "invalid path",
-  });
+app.get("/hello", async (_, res) => {
+	console.log("listen from screen share hello->");
+  return res
+    .status(200)
+    .json({ message: "Welcome to screen share server root endpoint hello->" });
 });
+
 const io = socketIo(server, {
   cors: {
     origin: "https://screen-sharing-platform.vercel.app",
