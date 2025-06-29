@@ -30,6 +30,9 @@ const io = socketIo(server, {
     origin: "https://screen-sharing-platform.vercel.app",
     methods: ["GET", "POST"],
   },
+  pingTimeout: 60000, // 60 seconds
+  pingInterval: 25000, // 25 seconds
+  connectTimeout: 45000, // 45 seconds
 });
 
 const PORT = process.env.PORT || 5000;

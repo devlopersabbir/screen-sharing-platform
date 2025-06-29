@@ -314,8 +314,10 @@ export default function App() {
       autoConnect: false,
       transports: ["websocket"],
 
-      retries: 3,
-      ackTimeout: 10000,
+      timeout: 20000,
+      reconnection: true,
+      reconnectionDelay: 1000,
+      reconnectionAttempts: 5,
     });
     socket.current.connect();
     socket.current.on("connect_error", (error) => {
