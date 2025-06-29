@@ -312,10 +312,28 @@ export default function App() {
   useEffect(() => {
     socket.current = io(baseUri, {
       autoConnect: false,
-      transports: ["websocket"],
+      // transports: ["websocket"],
       withCredentials: true,
     });
     socket.current.connect();
+    socket.current.on("connect_error", (error) => {
+      console.error("Full Error Object:", error);
+    });
+    socket.current.on("reconnect_attempt", (attemptNumber) => {
+      console.log(`🔄 Reconnection attempt #${attemptNumber}`);
+    });
+
+    socket.current.on("reconnect_error", (error) => {
+      console.error("🔄❌ Reconnection Error:", error);
+    });
+
+    socket.current.on("reconnect_failed", () => {
+      console.error("🔄❌ Reconnection failed after maximum attempts");
+    });
+
+    socket.current.on("reconnect", (attemptNumber) => {
+      console.log(`🔄✅ Reconnected after ${attemptNumber} attempts`);
+    });
 
     socket.current.on("connect", () => {
       console.log(
