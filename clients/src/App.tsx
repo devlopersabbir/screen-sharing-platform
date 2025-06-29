@@ -313,7 +313,9 @@ export default function App() {
     socket.current = io(baseUri, {
       autoConnect: false,
       transports: ["websocket"],
-      // withCredentials: true,
+
+      retries: 3,
+      ackTimeout: 10000,
     });
     socket.current.connect();
     socket.current.on("connect_error", (error) => {
