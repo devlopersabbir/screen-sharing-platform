@@ -312,8 +312,8 @@ export default function App() {
   useEffect(() => {
     socket.current = io(baseUri, {
       autoConnect: false,
-      // transports: ["websocket"],
-      withCredentials: true,
+      transports: ["websocket"],
+      // withCredentials: true,
     });
     socket.current.connect();
     socket.current.on("connect_error", (error) => {
