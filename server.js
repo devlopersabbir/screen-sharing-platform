@@ -27,7 +27,7 @@ app.use(
 
 const io = socketIo(server, {
   cors: {
-    origin: "*:*",
+    origin: "https://screen-sharing-platform.vercel.app",
     methods: ["GET", "POST"],
   },
 });
