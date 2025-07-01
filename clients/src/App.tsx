@@ -1,8 +1,9 @@
 import { useEffect, useRef, useState, useCallback } from "react";
-import io, { Socket } from "socket.io-client";
+import { Socket } from "socket.io-client";
 import { startCapture } from "./utils";
 import "webrtc-adapter";
-import { baseUri } from "./constants";
+import ActiveUsers from "./components/active-users";
+import { web_socket } from "./libs/socket";
 
 const configuration: RTCConfiguration = {
   iceServers: [{ urls: "stun:stun.l.google.com:19302" }], // free google ice server
@@ -310,15 +311,7 @@ export default function App() {
 
   // --- Socket.IO initialization and global listeners (runs once on mount) ---
   useEffect(() => {
-    socket.current = io(baseUri, {
-      autoConnect: false,
-      transports: ["websocket"],
-
-      timeout: 20000,
-      reconnection: true,
-      reconnectionDelay: 1000,
-      reconnectionAttempts: 5,
-    });
+    socket.current = web_socket;
     socket.current.connect();
     socket.current.on("connect_error", (error) => {
       console.error("Full Error Object:", error);
@@ -339,7 +332,7 @@ export default function App() {
       console.log(`🔄✅ Reconnected after ${attemptNumber} attempts`);
     });
 
-    socket.current.on("connect", () => {
+    socket.current.on("connect", async () => {
       console.log(
         "Connected to signaling server. Socket ID:",
         socket.current?.id
@@ -347,7 +340,7 @@ export default function App() {
       setStatusMessage("Connected to signaling server. Enter a room ID.");
     });
 
-    socket.current.on("disconnect", () => {
+    socket.current.on("disconnect", async () => {
       console.log("Disconnected from signaling server");
       setJoinedRoom(false);
       setIsSharer(false);
@@ -744,6 +737,7 @@ export default function App() {
           </div>
         </div>
       )}
+      <ActiveUsers />
     </div>
   );
 }
