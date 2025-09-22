@@ -49,7 +49,7 @@ const io = socketIo(server, {
   connectTimeout: 45000, // 45 seconds
 });
 
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 5056;
 
 // Store room data: { roomId: { sharerId: 'socketId', viewers: ['socketId1', 'socketId2'] } }
 // Added a set to handle viewers for better performance on add/remove and uniqueness
